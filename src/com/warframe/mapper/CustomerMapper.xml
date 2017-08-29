@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+ 
+ <!-- 这次的mybatis要实现动态sql，因为要进行模糊查询 -->
+ 
+ 
+ <mapper namespace="com.warframe.mapper.CustomerMapper">
+ 	<!-- 分页查询记录 -->
+ 	<select id="findByPage" resultType="com.warframe.po.Customer">
+ 		select cid,cname,gender,birthday,cellphone,email,description from t_customer 
+ 		limit #{startPos},#{pageSize}
+ 	</select>
+ 	
+ 	
+ 	<!-- 查询符合条件的记录一共有几条 -->
+ 	<select id="count" resultType="int">
+ 		select count(*) from t_customer
+ 	</select>
+ 
+ 	<!-- 查询所有客户信息 -->
+ 	<select id="findAll" resultType="com.warframe.po.Customer">
+ 		select cid,cname,gender,birthday,cellphone,email,description from t_customer
+ 	</select>
+ 	
+ 	<delete id="deleteById" parameterType="String">
+ 		delete from t_customer where cid = #{cid}
+ 	</delete>
+ 	
+ 	<select id="selectById" parameterType="String" resultType="com.warframe.po.Customer">
+ 		select cid,cname,gender,birthday,cellphone,email,description from t_customer
+ 		where cid = #{cid} 
+ 	</select>
+ 	
+ 	<update id="update" parameterType="com.warframe.po.Customer">
+ 		update t_customer set cname=#{cname},gender=#{gender},birthday=#{birthday},
+ 		cellphone=#{cellphone},email=#{email},description=#{description}
+ 		where cid=#{cid}
+ 	</update>
+ 	
+ 	<insert id="save" parameterType="com.warframe.po.Customer">
+ 		insert into t_customer
+ 		(cid,cname,gender,birthday,cellphone,email,description) 
+ 		values(
+ 			#{cid},#{cname},#{gender},#{birthday},#{cellphone},#{email},#{description}
+ 		)
+ 	</insert>
+ 	<delete id="batchDeleteCustomers" parameterType="int">
+ 		delete from t_customer where cid in
+ 		<!-- (1,2,3...) -->
+ 		<foreach item="cid" collection="array" open="(" separator="," close=")">
+ 			#{cid}
+ 		</foreach>
+ 	</delete>
+ </mapper>
